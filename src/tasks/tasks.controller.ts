@@ -121,6 +121,24 @@ export class TasksController {
     return this.tasksService.createTask(createTaskDto, user);
   }
 
+  @ApiOperation({
+    summary: 'Delete a user\'s task by ID', 
+    description: 'This endpoint deletes a task which belongs to the authenticated user by it\'s ID.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK, 
+    description: 'The task was successfully deleted.'
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND, 
+    description: 'Task not found.',
+    type: TaskNotFoundResponseDto
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR, 
+    description: 'Something wrong happened. Please try again.',
+    type: InternalServerErrorExceptionDto
+  })
   @Delete('/:id')
   deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
     return this.tasksService.deleteTask(id, user);
