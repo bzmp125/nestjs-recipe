@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SigninOkResponseDto, SigninUnauthorizedResponseDto } from './dto/signin-responses.dto';
-import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-server-error-exception-dto';
+import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-server-error-exception.dto';
 import { SignupBadRequestResponseDto, SignupConflictResponseDto } from './dto/signup-responses.dto';
 
 @ApiTags('Auth')
