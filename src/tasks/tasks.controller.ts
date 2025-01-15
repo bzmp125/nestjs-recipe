@@ -24,6 +24,7 @@ import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-s
 import { TaskDto } from './dto/task.dto';
 import { TaskNotFoundResponseDto } from './dto/get-tasks-responses.dto';
 import { CreateTaskBadRequestDto } from './dto/create-task-responses.dto';
+import { UpdateTaskStatusBadRequestResponseDto } from './dto/update-task-responses.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -144,12 +145,36 @@ export class TasksController {
     return this.tasksService.deleteTask(id, user);
   }
 
+  @ApiOperation({
+    summary: 'Update a task\'s status by ID', 
+    description: 'This endpoint updates the status of a task which belongs to the authenticated user by it\'s ID.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK, 
+    description: 'The task status was successfully updated.',
+    type: TaskDto
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND, 
+    description: 'Task not found.',
+    type: TaskNotFoundResponseDto
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST, 
+    description: 'The task status validation failed, check the response for the error.',
+    type: UpdateTaskStatusBadRequestResponseDto
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR, 
+    description: 'Something wrong happened. Please try again.',
+    type: InternalServerErrorExceptionDto
+  })
   @Patch('/:id/status')
   updateTaskStatus(
     @Param('id') id: string,
     @Body() updateTaskStatusDto: UpdateTaskStatusDto,
     @GetUser() user: User,
-  ): Promise<Task> {
+  ): Promise<TaskDto> {
     const { status } = updateTaskStatusDto;
     return this.tasksService.updateTaskStatus(id, status, user);
   }
