@@ -23,6 +23,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-server-error-exception.dto';
 import { TaskDto } from './dto/task.dto';
 import { TaskNotFoundResponseDto } from './dto/get-tasks-responses.dto';
+import { CreateTaskBadRequestDto } from './dto/create-task-responses.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -55,7 +56,7 @@ export class TasksController {
   getTasks(
     @Query() filterDto: GetTasksFilterDto,
     @GetUser() user: User,
-  ): Promise<Task[]> {
+  ): Promise<TaskDto[]> {
     this.logger.verbose(
       `User "${user.username}" retrieving all tasks. Filters: ${JSON.stringify(
         filterDto,
@@ -84,15 +85,34 @@ export class TasksController {
     type: InternalServerErrorExceptionDto
   })
   @Get('/:id')
-  getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
+  getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<TaskDto> {
     return this.tasksService.getTaskById(id, user);
   }
 
+  @ApiOperation({
+    summary: 'Create a task', 
+    description: 'This endpoint creates a task and saves it under the authenticated user.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED, 
+    description: 'The task was created successfully under the authenticated user.',
+    type: TaskDto
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST, 
+    description: 'The task validation failed, check the response for the error.',
+    type: CreateTaskBadRequestDto
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR, 
+    description: 'Something wrong happened. Please try again.',
+    type: InternalServerErrorExceptionDto
+  })
   @Post()
   createTask(
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: User,
-  ): Promise<Task> {
+  ): Promise<TaskDto> {
     this.logger.verbose(
       `User "${user.username}" creating a new task. Data: ${JSON.stringify(
         createTaskDto,
