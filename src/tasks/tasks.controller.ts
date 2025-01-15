@@ -22,6 +22,7 @@ import { Logger } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-server-error-exception.dto';
 import { TaskDto } from './dto/task.dto';
+import { TaskNotFoundResponseDto } from './dto/get-tasks-responses.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -63,6 +64,25 @@ export class TasksController {
     return this.tasksService.getTasks(filterDto, user);
   }
 
+  @ApiOperation({
+    summary: 'Retrieve a user\'s task by ID', 
+    description: 'This endpoint retrieves a task which belongs to the authenticated user by it\'s ID.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK, 
+    description: 'Successfully retrieved the task by ID belonging to the authenticated user.',
+    type: TaskDto
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND, 
+    description: 'Task not found.',
+    type: TaskNotFoundResponseDto
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR, 
+    description: 'Something wrong happened. Please try again.',
+    type: InternalServerErrorExceptionDto
+  })
   @Get('/:id')
   getTaskById(@Param('id') id: string, @GetUser() user: User): Promise<Task> {
     return this.tasksService.getTaskById(id, user);
