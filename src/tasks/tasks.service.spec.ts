@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { TaskStatus } from './task-status.enum';
 import { TasksRepository } from './tasks.repository';
 import { TasksService } from './tasks.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 const mockTasksRepository = () => ({
   getTasks: jest.fn(),
@@ -24,12 +25,12 @@ describe('TasksService', () => {
     const module = await Test.createTestingModule({
       providers: [
         TasksService,
-        { provide: TasksRepository, useFactory: mockTasksRepository },
+        { provide: getRepositoryToken(TasksRepository), useFactory: mockTasksRepository },
       ],
     }).compile();
 
-    tasksService = module.get(TasksService);
-    tasksRepository = module.get(TasksRepository);
+    tasksService = module.get<TasksService>(TasksService);
+    tasksRepository = module.get<TasksRepository>(getRepositoryToken(TasksRepository));
   });
 
   describe('getTasks', () => {
