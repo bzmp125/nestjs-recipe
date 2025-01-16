@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class InternalServerErrorExceptionDto {
+export class UnauthorizedExceptionDto {
     @ApiProperty({
         name: 'message',
         description: 'A generic message for an internal server error.',

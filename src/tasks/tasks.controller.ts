@@ -16,15 +16,15 @@ import { User } from '../auth/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
-import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 import { Logger } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { InternalServerErrorExceptionDto } from 'src/utils/common/dto/internal-server-error-exception.dto';
+import { InternalServerErrorExceptionDto } from '../utils/common/dto/internal-server-error-exception.dto';
 import { TaskDto } from './dto/task.dto';
 import { TaskNotFoundResponseDto } from './dto/get-tasks-responses.dto';
 import { CreateTaskBadRequestDto } from './dto/create-task-responses.dto';
 import { UpdateTaskStatusBadRequestResponseDto } from './dto/update-task-responses.dto';
+import { UnauthorizedExceptionDto } from '../utils/common/dto/unauthorized-exception.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -33,6 +33,7 @@ import { UpdateTaskStatusBadRequestResponseDto } from './dto/update-task-respons
 @ApiResponse({
   status: HttpStatus.UNAUTHORIZED, 
   description: 'The access token in the Authorization header is invalid.',
+  type: UnauthorizedExceptionDto
 })
 export class TasksController {
   private logger = new Logger('TasksController');
